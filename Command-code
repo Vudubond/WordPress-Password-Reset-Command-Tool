@@ -1,0 +1,15 @@
+cpanel_username=`grep  ${@} /etc/userdomains | awk '{print $2}'`
+documentroot=`grep documentroot /var/cpanel/userdata/$cpanel_username/${@} | awk '{print $2}'`
+cd $documentroot
+wppassword=$(</dev/urandom tr -dc '12345!&*#%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c13; echo "")
+#read -p " Choose WordPress Password :- " wppassword;
+wpuser=`wp user list --allow-root | awk {'print $2'} | grep -v user_login`
+wp user update $wpuser --user_pass="$wppassword" --allow-root
+echo "================================================================="
+echo "WordPress Details are as follows"
+echo ""
+echo "Website Name : ${@}"
+echo "Username: $wpuser"
+echo "Password: $wppassword"
+echo ""
+echo "================================================================="
